@@ -20,11 +20,9 @@ export default function reducer(state=initialState, action){
     // return state;
     switch(action.type){
         case GET_USER + '_FULFILLED':
-        return Object.assign({}, state, {user:actoin.payload})
+        return Object.assign({}, state, {user:action.payload})
         // case GET_USER + '_PENDING':
         // case GET_USER + '_REJECTED':
-
-
         
         default:
         return state;

@@ -18,7 +18,7 @@ export function getUser() {
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
-        case GET_USER + '_FULFILLED':
+        case GET_USER_FULFILLED:
             return Object.assign({}, state, {user: action.payload})
         // case GET_USER + '_PENDING':
         // case GET_USER + '_REJECTED':
