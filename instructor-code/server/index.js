@@ -11,10 +11,16 @@ const {
     DOMAIN,
     CLIENT_ID,
     CLIENT_SECRET,
-    CALLBACK_URL
+    CALLBACK_URL,
+    CONNECTION_STRING
 } = process.env;
 
 const app = express();
+
+massive(CONNECTION_STRING).then((db) => {
+    console.log('Connected to DB');
+    app.set('db', db);
+})
 
 // order in important
 // session
@@ -34,15 +40,25 @@ passport.use(new Auth0Strategy({
     callbackURL: CALLBACK_URL,
     scope: 'openid profile'
 }, (accessToken, refreshToken, extraParams, profile, done) => {
-    done(null, profile);
+    let db = app.get('db');
+    let {displayName, picture, id} = profile;
+    db.find_user([id]).then((foundUser) => {
+        if (foundUser[0]) {
+            done(null, foundUser[0].id)
+        } else {
+            db.create_user([displayName, picture, id]).then( (user) => {
+                done(null, user[0].id)
+            })
+        }
+    })
 }))
 
-passport.serializeUser( (profile, done) => {
-    done(null, profile);
+passport.serializeUser( (id, done) => {
+    done(null, id);
 })
-passport.deserializeUser( (profile, done) => {
+passport.deserializeUser( (id, done) => {
     // whatever we pass out, ends up on req object as req.user
-    done(null, profile);
+    done(null, id);
 })
 
 app.get('/login', passport.authenticate('auth0'));
