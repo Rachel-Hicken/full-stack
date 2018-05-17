@@ -58,13 +58,22 @@ passport.serializeUser( (id, done) => {
 })
 passport.deserializeUser( (id, done) => {
     // whatever we pass out, ends up on req object as req.user
-    done(null, id);
+    app.get('db').find_session_user([id]).then((user) => {
+        done(null, user[0])
+    })
 })
 
 app.get('/login', passport.authenticate('auth0'));
 app.get('/auth/callback', passport.authenticate('auth0', {
     successRedirect: 'http://localhost:3000'
 }))
+app.get('/auth/me', function(req, res) {
+    if(req.user) {
+        res.status(200).send(req.user);
+    } else {
+        res.status(401).send('Nice try suckkkkkkkkaaaaaaa')
+    }
+})
 
 
 app.listen(SERVER_PORT, () => {
