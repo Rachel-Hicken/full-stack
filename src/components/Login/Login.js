@@ -1,12 +1,14 @@
 import React from 'react';
+import logo from './communityBank.svg'
+import './Login.css'
 
-export default function Login(){
-    return(
-        <div>
-            <img src="" alt=""/>
+export default function Login() {
+    return (
+        <div className='login'>
+            <img src={logo} alt="" />
             <a href={process.env.REACT_APP_LOGIN}>
                 <button>Login</button>
-                </a>
+            </a>
         </div>
     )
 }
